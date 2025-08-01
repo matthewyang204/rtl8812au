@@ -12,6 +12,8 @@
  * more details.
  *
  *****************************************************************************/
+#include <linux/version.h>
+
 #ifndef _LINUX_BYTEORDER_SWAB_H
 #define _LINUX_BYTEORDER_SWAB_H
 
@@ -107,19 +109,28 @@ __inline static __u64 __arch__swab64(__u64 x)
 #ifdef PLATFORM_FREEBSD
 	__inline static __u16 __fswab16(__u16 x)
 #else
+	#if LINUX_VERSION_CODE < KERNEL_VERSION(6,7,0)
 	__inline static const __u16 __fswab16(__u16 x)
+	#endif
 #endif /* PLATFORM_FREEBSD */
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6,7,0)
+static inline __u16__swab16(__u16 x)
 {
 	return __arch__swab16(x);
 }
-#ifdef PLATFORM_FREEBSD
-	__inline static __u32 __fswab32(__u32 x)
-#else
-	__inline static const __u32 __fswab32(__u32 x)
-#endif /* PLATFORM_FREEBSD */
+#endif
+#if defined(PLATFORM_FREEBSD)
+__inline static __u32 __fswab32(__u32 x)
 {
-	return __arch__swab32(x);
+    return __arch__swab32(x);
 }
+#elif LINUX_VERSION_CODE < KERNEL_VERSION(6,7,0)
+__inline static const __u32 __fswab32(__u32 x)
+{
+    return __arch__swab32(x);
+}
+#endif
+
 
 #if defined(PLATFORM_LINUX)
 	#define swab16 __swab16
