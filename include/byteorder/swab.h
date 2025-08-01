@@ -109,7 +109,9 @@ __inline static __u64 __arch__swab64(__u64 x)
 #ifdef PLATFORM_FREEBSD
 	__inline static __u16 __fswab16(__u16 x)
 #else
+	#if LINUX_VERSION_CODE < KERNEL_VERSION(6,7,0)
 	__inline static const __u16 __fswab16(__u16 x)
+	#endif
 #endif /* PLATFORM_FREEBSD */
 {
 	return __arch__swab16(x);
