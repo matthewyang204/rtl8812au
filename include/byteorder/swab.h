@@ -114,16 +114,18 @@ __inline static __u64 __arch__swab64(__u64 x)
 {
 	return __arch__swab16(x);
 }
-#ifdef PLATFORM_FREEBSD
-	__inline static __u32 __fswab32(__u32 x)
-#else
-	#if LINUX_VERSION_CODE < KERNEL_VERSION(6,7,0)
-	__inline static const __u32 __fswab32(__u32 x)
-	#endif /* LINUX_VERSION_CODE < KERNEL_VERSION(6,7,0) */
-#endif /* PLATFORM_FREEBSD */
+#if defined(PLATFORM_FREEBSD)
+__inline static __u32 __fswab32(__u32 x)
 {
-	return __arch__swab32(x);
+    return __arch__swab32(x);
 }
+#elif LINUX_VERSION_CODE < KERNEL_VERSION(6,7,0)
+__inline static const __u32 __fswab32(__u32 x)
+{
+    return __arch__swab32(x);
+}
+#endif
+
 
 #if defined(PLATFORM_LINUX)
 	#define swab16 __swab16
